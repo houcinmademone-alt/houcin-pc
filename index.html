@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <base target="_self">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Houcin PC - توصية تجميعة حاسوب حسب الميزانية بالصور</title>
+    <meta name="description" content="تطبيق Houcin PC يقترح لك تجميعة حاسوب بالسعر الذي تريده مع صور ومواصفات مفصلة">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#3b82f6",
+                        secondary: "#1e40af",
+                        accent: "#10b981",
+                        dark: "#1f2937"
+                    },
+                    fontFamily: {
+                        'cairo': ['Cairo', 'sans-serif']
+                    },
+                    spacing: {
+                        '18': '4.5rem',
+                        '88': '22rem'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * {
+            font-family: 'Cairo', sans-serif;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .price-badge {
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50 text-gray-800">
+    <header class="gradient-bg text-white shadow-lg">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center space-x-3 space-x-reverse mb-4 md:mb-0">
+                    <div class="bg-white p-3 rounded-full">
+                        <i class="fas fa-desktop text-primary text-2xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-3xl font-bold">Houcin PC</h1>
+                        <p class="text-blue-100">توصية تجميعة حاسوب حسب ميزانيتك</p>
+                    </div>
+                </div>
+                
+                <nav class="hidden md:block">
+                    <ul id="nav-list" class="flex space-x-6 space-x-reverse"></ul>
+                </nav>
+                
+                <div class="flex items-center space-x-4 space-x-reverse mt-4 md:mt-0">
+                    <div class="bg-white/20 p-2 rounded-lg">
+                        <i class="fas fa-headset"></i>
+                        <span class="mr-2">الدعم الفني</span>
+                    </div>
+                    <button id="theme-toggle" class="bg-white/20 p-2 rounded-lg hover:bg-white/30 transition">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+        <section class="mb-12">
+            <div class="text-center mb-10">
+                <h2 class="text-4xl font-bold text-dark mb-4">ما هي ميزانيتك لتجميعة الحاسوب؟</h2>
+                <p class="text-gray-600 text-lg max-w-2xl mx-auto">
+                    أدخل الميزانية المطلوبة وسنقترح لك أفضل تجميعة حاسوب تناسب احتياجاتك مع صور ومواصفات مفصلة
+                </p>
+            </div>
+            
+            <div class="max-w-2xl mx-auto bg-white rounded-2xl shadow-xl p-8 mb-10">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div class="flex-1 w-full">
+                        <label class="block text-gray-700 mb-2 text-lg font-medium">الميزانية بالدينار الجزائري</label>
+                        <div class="relative">
+                            <input 
+                                type="range" 
+                                id="budget-slider" 
+                                min="30000" 
+                                max="350000" 
+                                step="5000" 
+                                value="70000" 
+                                class="w-full h-3 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                            >
+                            <div class="flex justify-between text-sm text-gray-500 mt-2">
+                                <span>30,000 دج</span>
+                                <span>180,000 دج</span>
+                                <span>350,000 دج</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex-1 w-full">
+                        <div class="mb-4">
+                            <label class="block text-gray-700 mb-2 text-lg font-medium">أو أدخل المبلغ يدوياً</label>
+                            <div class="relative">
+                                <input 
+                                    type="number" 
+                                    id="budget-input" 
+                                    min="30000" 
+                                    max="350000" 
+                                    value="70000" 
+                                    class="w-full p-4 pr-12 border-2 border-gray-300 rounded-xl text-2xl font-bold text-center focus:border-primary focus:outline-none"
+                                >
+                                <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 text-xl">دج</span>
+                            </div>
+                        </div>
+                        
+                        <button id="recommend-btn" class="w-full bg-primary hover:bg-secondary text-white font-bold py-4 px-6 rounded-xl text-lg transition duration-300 flex items-center justify-center gap-2">
+                            <i class="fas fa-magic"></i>
+                            احصل على التوصية
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="mt-8 pt-8 border-t border-gray-200">
+                    <div class="flex flex-wrap gap-4 justify-center">
+                        <button class="budget-quick-btn px-6 py-3 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition" data-budget="35000">
+                            ميزانية منخفضة (35,000 دج)
+                        </button>
+                        <button class="budget-quick-btn px-6 py-3 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition" data-budget="75000">
+                            ميزانية متوسطة (75,000 دج)
+                        </button>
+                        <button class="budget-quick-btn px-6 py-3 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition" data-budget="160000">
+                            ميزانية عالية (160,000 دج)
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div id="loading" class="hidden text-center py-12">
+            <div class="inline-block animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-primary mb-4"></div>
+            <p class="text-gray-600 text-lg">جاري البحث عن أفضل تجميعة وتوليد الصور المناسبة...</p>
+        </div>
+
+        <section id="recommendation-section" class="hidden">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-3xl font-bold text-dark">التجميعة المقترحة المعاينة</h2>
+                <div class="flex items-center gap-4">
+                    <span id="budget-display" class="text-2xl font-bold text-primary"></span>
+                    <button id="regenerate-btn" class="bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-6 rounded-lg transition flex items-center gap-2">
+                        <i class="fas fa-redo"></i>
+                        توليد تجميعة أخرى
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden mb-10">
+                <div class="md:flex">
+                    <div class="md:w-2/5 relative">
+                        <img id="build-image" src="" alt="تجميعة الحاسوب المقترحة" class="w-full h-64 md:h-full object-cover">
+                        <div class="price-badge bg-accent text-white font-bold py-2 px-6 rounded-full shadow-lg">
+                            <span id="total-price"></span> دج
+                        </div>
+                    </div>
+                    
+                    <div class="md:w-3/5 p-8">
+                        <div class="mb-6">
+                            <h3 id="build-title" class="text-2xl font-bold text-dark mb-2"></h3>
+                            <p id="build-description" class="text-gray-600"></p>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                            <div class="bg-gray-50 p-4 rounded-xl">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="bg-primary/10 p-2 rounded-lg">
+                                        <i class="fas fa-gamepad text-primary"></i>
+                                    </div>
+                                    <h4 class="font-bold text-gray-800">الأداء في الألعاب</h4>
+                                </div>
+                                <div class="flex items-center">
+                                    <div id="gaming-stars" class="text-yellow-400 text-xl"></div>
+                                    <span id="gaming-text" class="mr-2 text-gray-600"></span>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-gray-50 p-4 rounded-xl">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="bg-accent/10 p-2 rounded-lg">
+                                        <i class="fas fa-video text-accent"></i>
+                                    </div>
+                                    <h4 class="font-bold text-gray-800">التصميم والمونتاج</h4>
+                                </div>
+                                <div class="flex items-center">
+                                    <div id="editing-stars" class="text-yellow-400 text-xl"></div>
+                                    <span id="editing-text" class="mr-2 text-gray-600"></span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-wrap gap-4">
+                            <button id="share-btn" class="flex-1 min-w-[150px] bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-3 px-6 rounded-lg transition flex items-center justify-center gap-2">
+                                <i class="fas fa-share-alt"></i>
+                                مشاركة
+                            </button>
+                            <button id="save-btn" class="flex-1 min-w-[150px] bg-primary hover:bg-secondary text-white font-medium py-3 px-6 rounded-lg transition flex items-center justify-center gap-2">
+                                <i class="far fa-save"></i>
+                                حفظ التجميعة
+                            </button>
+                            <button id="buy-btn" class="flex-1 min-w-[150px] bg-accent hover:bg-green-600 text-white font-medium py-3 px-6 rounded-lg transition flex items-center justify-center gap-2">
+                                <i class="fas fa-shopping-cart"></i>
+                                شراء المكونات
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-12">
+                <h3 class="text-2xl font-bold text-dark mb-6">مكونات التجميعة</h3>
+                <div id="components-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+            </div>
+
+            <div class="mb-12">
+                <h3 class="text-2xl font-bold text-dark mb-6">تجميعات بديلة</h3>
+                <div id="alternative-builds" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+            </div>
+        </section>
+
+        <section class="py-12">
+            <h2 class="text-3xl font-bold text-center text-dark mb-10">لماذا تختار Houcin PC؟</h2>
+            <div id="features-grid" class="grid grid-cols-1 md:grid-cols-3 gap-8"></div>
+        </section>
+    </main>
+
+    <footer class="bg-dark text-white pt-12 pb-8">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="bg-white p-2 rounded-full">
+                            <i class="fas fa-desktop text-primary text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold">Houcin PC</h3>
+                    </div>
+                    <p class="text-gray-300 mb-4">
+                        نقدم أفضل توصيات تجميع الحواسيب حسب الميزانية مع ضمان الجودة والسعر المناسب.
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="#" class="text-gray-300 hover:text-white transition"><i class="fab fa-twitter text-xl"></i></a>
+                        <a href="#" class="text-gray-300 hover:text-white transition"><i class="fab fa-instagram text-xl"></i></a>
+                        <a href="#" class="text-gray-300 hover:text-white transition"><i class="fab fa-youtube text-xl"></i></a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-bold mb-4">روابط سريعة</h4>
+                    <ul id="footer-links-1" class="space-y-2"></ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-bold mb-4">التجميعات</h4>
+                    <ul id="footer-links-2" class="space-y-2"></ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-bold mb-4">اتصل بنا</h4>
+                    <ul class="space-y-3">
+                        <li class="flex items-center gap-3">
+                            <i class="fas fa-phone text-primary"></i>
+                            <span class="text-gray-300">+213 555 12 34 56</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fas fa-envelope text-primary"></i>
+                            <span class="text-gray-300">support@houcinpc.com</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fas fa-map-marker-alt text-primary"></i>
+                            <span class="text-gray-300">الجزائر العاصمة، الجزائر</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="pt-8 border-t border-gray-700 text-center text-gray-400">
+                <p>© 2026 Houcin PC. جميع الحقوق محفوظة.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // ==================== DATA LAYER ====================
+        const navigationItems = [
+            { "label": "الرئيسية", "href": "#home", "icon": "fas fa-home" },
+            { "label": "التجميعات", "href": "#builds", "icon": "fas fa-desktop" },
+            { "label": "الميزانية", "href": "#budget", "icon": "fas fa-coins" },
+            { "label": "الدليل", "href": "#guide", "icon": "fas fa-book" },
+            { "label": "اتصل بنا", "href": "#contact", "icon": "fas fa-phone" }
+        ];
+
+        const features = [
+            { 
+                "title": "توصيات ذكية", 
+                "description": "نستخدم خوارزميات ذكية لاقتراح أفضل المكونات بناءً على ميزانيتك واحتياجاتك الفردية", 
+                "icon": "fas fa-brain",
+                "color": "text-primary"
+            },
+            { 
+                "title": "أسعار حقيقية بالجزائر", 
+                "description": "جميع الأسعار مأخوذة من أسواق محلية وتحدّث بشكل دوري لضمان الدقة الكاملة", 
+                "icon": "fas fa-tag",
+                "color": "text-accent"
+            },
+            { 
+                "title": "دعم فني", 
+                "description": "فريق دعم فني متاح للإجابة على استفساراتك ومساعدتك في التجميع والتركيب", 
+                "icon": "fas fa-headset",
+                "color": "text-purple-500"
+            }
+        ];
+
+        const footerLinks1 = [
+            { "label": "سياسة الخصوصية", "href": "#privacy" },
+            { "label": "الشروط والأحكام", "href": "#terms" },
+            { "label": "الأسئلة الشائعة", "href": "#faq" },
+            { "label": "عن الموقع", "href": "#about" }
+        ];
+
+        const footerLinks2 = [
+            { "label": "تجميعات الألعاب", "href": "#gaming" },
+            { "label": "تجميعات التصميم", "href": "#design" },
+            { "label": "تجميعات الميزانية", "href": "#budget-builds" },
+            { "label": "تجميعات المحترفين", "href": "#pro" }
+        ];
+
+        // Computer builds database (تم تحديث الأسعار لتبدأ من 30,000 دج ومزودة بروابط صور دقيقة وواقعية للقطع والشكل النهائي)
+        const computerBuilds = [
+            {
+                "id": 1,
+                "title": "تجميعة الميزانية الاقتصادية (كابا مستعمل)",
+                "description": "تجميعة مخصصة للمهام المكتبية، الدراسة، التصفح السريع، ومتابعة المحتوى مع إقلاع فوري للنظام بفضل الـ SSD.",
+                "basePrice": 35000,
+                "image": "https://images.unsplash.com/photo-1547082299-de196ea013d6?w=600&auto=format&fit=crop&q=80",
+                "gamingScore": 1,
+                "editingScore": 1,
+                "components": [
+                    { "name": "المعالج (CPU)", "model": "Intel Core i5-4570 (Refurbished)", "price": 5000, "image": "https://images.unsplash.com/photo-1591405351990-4726e331f141?w=200&auto=format&fit=crop&q=60" },
+                    { "name": "كرت الشاشة (GPU)", "model": "Intel HD Graphics مدمج", "price": 0, "image": "https://images.unsplash.com/photo-1591405351990-4726e331f141?w=200&auto=format&fit=crop&q=60" },
+                    { "name": "اللوحة الأم (Motherboard)", "model": "H81 Motherboard DDR3", "price": 5500, "image": "https://images.unsplash.com/photo-1562976540-1502c2145186?w=200&auto=format&fit=crop&q=60" },
+                    { "name": "الذاكرة العشوائية (RAM)", "model": "8GB DDR3 1600MHz", "price": 2500, "image": "https://images.unsplash.com/photo-1541029071515-84cc54f84dc5?w=200&auto=format&fit=crop&q=60" },
+                    { "name": "وحدة التخزين (Storage)", "model": "256GB SATA SSD سريع", "price": 4000, "image": "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=200&auto=format&fit=crop&q=60" },
+                    { "name": "علبة الطاقة والصندوق (Case+PSU)", "model": "Standard Office Case + 400W PSU", "price": 18000, "image": "https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=200&auto=format&fit=crop&q=60" }
+                ]
+            },
+            {
+                "id": 2,
+                "title": "تجميعة الألعاب والإنتاجية الاقتصادية",
+                "description": "تجميعة ممتازة لبدء ألعاب الـ eSports (مثل فورتنايت وبابجي) بدقة 1080p بمعدل إطارات مستقر، مع تلبية برامج التصميم الأساسية.",
+                "basePrice": 75000,
+                "image": "https://images.unsplash.com/photo-1587831990711-23ca6441447b?w=600&auto=format&fit=crop&q=80",
+                "gamingScore": 3,
+                "editingScore": 3,
+                "components": [
+                    { "name": "المعالج (CPU)", "model": "Intel Core i3-12100F (جيل 12)", "price": 14500, "image": "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=200&auto=format&fit=crop&q=60" },
+                    { "name": "كرت الشاشة (GPU)", "model": "AMD Radeon RX 580 8GB (Refurbished)", "price": 18000, "image": "https://images.unsplash.com/photo-1591488320449-011701bb6704?w=200&auto=format&fit=crop&q=60" },
+                    { "name": "اللوحة الأم (Motherboard)", "model": "H610M Ultra Board DDR4", "price": 13500, "image": "https://images.unsplash.com/photo-1562976540-1502c2145186?w=200&auto=format&fit=crop&q=60" },
+                    { "name": "الذاكرة العشوائية (RAM)", "model": "16GB (2x8GB) DDR4 3200MHz", "price": 7500, "image": "https://images.unsplash.com/photo-1541029071515-84cc54f84dc5?w=200&auto=format&fit=crop&q=60" },
+                    { "name": "وحدة التخزين (Storage)", "model": "512GB NVMe M.2 SSD", "price": 6500, "image": "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=200&auto=format&fit=crop&q=60" },
+                    { "name": "مزود الطاقة والصندوق", "model": "Gaming Case + 500W 80+ PSU", "price": 15000, "image": "https://images.unsplash.com/photo-1624705002806-5d72df19c3ad?w=200&auto=format&fit=crop&q=60" }
+                ]
+            },
+            {
+                "id": 3,
+                "title": "تجميعة الألعاب القوية والجيل الحديث",
+                "description": "تجميعة متكاملة مخصصة لتشغيل أقوى الألعاب الحديثة والمونتاج بدقة عالية وبث الألعاب دون أي تشنج أو عنق زجاجة.",
+                "basePrice": 160000,
+                "image": "https://images.unsplash.com/photo-1624705002806-5d72df19c3ad?w=600&auto=format&fit=crop&q=80",
+                "gamingScore": 5,
+                "editingScore": 4,
+                "components": [
+                    { "name": "المعالج (CPU)", "model": "Intel Core i5-12400F", "price": 21500, "image": "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=200&auto=format&fit=crop&q=60" },
+                    { "name": "كرت الشاشة (GPU)", "model": "NVIDIA RTX 4060 8GB", "price": 58000, "image": "https://images.unsplash.com/photo-1612444530582-fc66183b16f7?w=200&auto=format&fit=crop&q=60" },
+                    { "name": "اللوحة الأم (Motherboard)", "model": "B760M Gaming Intel Board", "price": 19500, "image": "https://images.unsplash.com/photo-1562976540-1502c2145186?w=200&auto=format&fit=crop&q=60" },
+                    { "name": "الذاكرة العشوائية (RAM)", "model": "16GB (2x8GB) Corsair DDR4 3600MHz", "price": 9500, "image": "https://images.unsplash.com/photo-1541029071515-84cc54f84dc5?w=200&auto=format&fit=crop&q=60" },
+                    { "name": "وحدة التخزين (Storage)", "model": "1TB NVMe M.2 SSD Kingston", "price": 11000, "image": "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=200&auto=format&fit=crop&q=60" },
+                    { "name": "مزود الطاقة والصندوق", "model": "Premium Mesh Case + 600W 80+ Bronze", "price": 21000, "image": "https://images.unsplash.com/photo-1591489376419-40ee69f37c09?w=200&auto=format&fit=crop&q=60" }
+                ]
+            },
+            {
+                "id": 4,
+                "title": "التجميعة الاحترافية المطلقة (High-End)",
+                "description": "الفئة العليا للمحترفين وصناع المحتوى، تمنحك أداءً خارقاً في رندرة مقاطع الفيديو ثلاثية الأبعاد والألعاب بدقة 4K فائقة الوضوح.",
+                "basePrice": 280000,
+                "image": "https://images.unsplash.com/photo-1603481588273-2f908a9a7a1b?w=600&auto=format&fit=crop&q=80",
+                "gamingScore": 5,
+                "editingScore": 5,
+                "components": [
+                    { "name": "المعالج (CPU)", "model": "AMD Ryzen 7 7800X3D الخارق", "price": 60000, "image": "https://images.unsplash.com/photo-1555617766-c94804975da3?w=200&auto=format&fit=crop&q=60" },
+                    { "name": "كرت الشاشة (GPU)", "model": "NVIDIA RTX 4070 Super 12GB", "price": 118000, "image": "https://images.unsplash.com/photo-1612444530582-fc66183b16f7?w=200&auto=format&fit=crop&q=60" },
+                    { "name": "اللوحة الأم (Motherboard)", "model": "B650M Gaming AMD DDR5 Board", "price": 26500, "image": "https://images.unsplash.com/photo-1562976540-1502c2145186?w=200&auto=format&fit=crop&q=60" },
+                    { "name": "الذاكرة العشوائية (RAM)", "model": "32GB (2x16GB) DDR5 6000MHz", "price": 19000, "image": "https://images.unsplash.com/photo-1541029071515-84cc54f84dc5?w=200&auto=format&fit=crop&q=60" },
+                    { "name": "وحدة التخزين (Storage)", "model": "2TB NVMe M.2 High Speed SSD", "price": 21000, "image": "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=200&auto=format&fit=crop&q=60" },
+                    { "name": "مزود الطاقة والصندوق", "model": "Premium RGB Mesh Case + 750W 80+ Gold", "price": 35500, "image": "https://images.unsplash.com/photo-1591489376419-40ee69f37c09?w=200&auto=format&fit=crop&q=60" }
+                ]
+            }
+        ];
+
+        // ==================== RENDER FUNCTIONS ====================
+        function renderNavItems(items) {
+            return items.map(item => 
+                `<li>
+                    <a href="${item.href}" class="flex items-center gap-2 hover:text-blue-200 transition">
+                        <i class="${item.icon}"></i>
+                        ${item.label}
+                    </a>
+                </li>`
+            ).join("");
+        }
+
+        function renderFeatures(items) {
+            return items.map(item => 
+                `<div class="bg-white rounded-xl p-6 shadow-lg card-hover">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="${item.color} text-2xl">
+                            <i class="${item.icon}"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-dark">${item.title}</h3>
+                    </div>
+                    <p class="text-gray-600">${item.description}</p>
+                </div>`
+            ).join("");
+        }
+
+        function renderFooterLinks(items) {
+            return items.map(item => 
+                `<li>
+                    <a href="${item.href}" class="text-gray-300 hover:text-white transition">${item.label}</a>
+                </li>`
+            ).join("");
+        }
+
+        function renderComponents(components) {
+            return components.map(comp => 
+                `<div class="bg-white rounded-xl p-5 shadow-md card-hover">
+                    <div class="flex items-start gap-4">
+                        <img src="${comp.image}" alt="${comp.name}" class="w-20 h-20 object-cover rounded-lg bg-gray-50">
+                        <div class="flex-1">
+                            <h4 class="font-bold text-gray-800 text-sm">${comp.name}</h4>
+                            <p class="text-gray-600 text-xs mb-2">${comp.model}</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-primary font-bold text-sm">${comp.price.toLocaleString()} دج</span>
+                                <button class="text-sm text-gray-400 hover:text-primary transition">
+                                    <i class="fas fa-check-circle text-accent"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>`
+            ).join("");
+        }
+
+        function renderAlternativeBuilds(builds, currentBudget) {
+            const sortedBuilds = [...builds].sort((a, b) => {
+                const diffA = Math.abs(a.basePrice - currentBudget);
+                const diffB = Math.abs(b.basePrice - currentBudget);
+                return diffA - diffB;
+            }).slice(0, 3);
+            
+            return sortedBuilds.map(build => 
+                `<div class="bg-white rounded-xl overflow-hidden shadow-lg card-hover">
+                    <img src="${build.image}" alt="${build.title}" class="w-full h-48 object-cover">
+                    <div class="p-5">
+                        <h4 class="font-bold text-lg text-dark mb-2">${build.title}</h4>
+                        <p class="text-gray-600 text-sm mb-4">${build.description.substring(0, 80)}...</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-primary font-bold text-xl">${build.basePrice.toLocaleString()} دج</span>
+                            <button class="select-alternative-btn bg-gray-100 hover:bg-gray-200 text-gray-800 py-2 px-4 rounded-lg transition" data-id="${build.id}">
+                                اختر هذه
+                            </button>
+                        </div>
+                    </div>
+                </div>`
+            ).join("");
+        }
+
+        function renderStars(score) {
+            let stars = "";
+            for (let i = 1; i <= 5; i++) {
+                if (i <= score) {
+                    stars += '<i class="fas fa-star"></i>';
+                } else {
+                    stars += '<i class="far fa-star"></i>';
+                }
+            }
+            return stars;
+        }
+
+        function getPerformanceText(score) {
+            const texts = ["ضعيف", "مقبول", "جيد وعملي", "جيد جداً", "ممتاز", "رائع / خارق"];
+            return texts[score] || "غير محدد";
+        }
+
+        // ==================== UTILITY FUNCTIONS ====================
+        function findBestBuild(budget) {
+            if (budget < 45000) {
+                return computerBuilds.find(b => b.id === 1) || computerBuilds[0];
+            }
+            
+            let bestBuild = computerBuilds[0];
+            let minDiff = Math.abs(bestBuild.basePrice - budget);
+            
+            computerBuilds.forEach(build => {
+                const diff = Math.abs(build.basePrice - budget);
+                if (diff < minDiff) {
+                    minDiff = diff;
+                    bestBuild = build;
+                }
+            });
+            
+            return bestBuild;
+        }
+
+        function calculateTotalPrice(build) {
+            return build.components.reduce((total, comp) => total + comp.price, 0);
+        }
+
+        // ==================== INITIALIZATION ====================
+        document.addEventListener("DOMContentLoaded", function() {
+            // رندرة القوائم الأساسية من مصفوفتك
+            document.getElementById("nav-list").innerHTML = renderNavItems(navigationItems);
+            document.getElementById("features-grid").innerHTML = renderFeatures(features);
+            document.getElementById("footer-links-1").innerHTML = renderFooterLinks(footerLinks1);
+            document.getElementById("footer-links-2").innerHTML = renderFooterLinks(footerLinks2);
+            
+            const budgetSlider = document.getElementById("budget-slider");
+            const budgetInput = document.getElementById("budget-input");
+            
+            budgetSlider.addEventListener("input", function() {
+                budgetInput.value = this.value;
+            });
+            
+            budgetInput.addEventListener("input", function() {
+                let value = parseInt(this.value);
+                if (value < 30000) value = 30000;
+                if (value > 350000) value = 350000;
+                this.value = value;
+                budgetSlider.value = value;
+            });
+            
+            // أزرار الميزانية السريعة دج
+            document.querySelectorAll(".budget-quick-btn").forEach(btn => {
+                btn.addEventListener("click", function() {
+                    const budget = parseInt(this.getAttribute("data-budget"));
+                    budgetInput.value = budget;
+                    budgetSlider.value = budget;
+                    generateRecommendation(budget);
+                });
+            });
+            
+            document.getElementById("recommend-btn").addEventListener("click", function() {
+                const budget = parseInt(budgetInput.value);
+                generateRecommendation(budget);
+            });
+            
+            document.getElementById("regenerate-btn").addEventListener("click", function() {
+                const budget = parseInt(budgetInput.value);
+                generateRecommendation(budget);
+            });
+            
+            // ميزة الوضع الليلي الأصلية
+            document.getElementById("theme-toggle").addEventListener("click", function() {
+                document.body.classList.toggle("bg-gray-900");
+                document.body.classList.toggle("text-gray-100");
+                const icon = this.querySelector("i");
+                if (icon.classList.contains("fa-moon")) {
+                    icon.classList.remove("fa-moon");
+                    icon.classList.add("fa-sun");
+                } else {
+                    icon.classList.remove("fa-sun");
+                    icon.classList.add("fa-moon");
+                }
+            });
+            
+            // أزرار الأكشن
+            document.getElementById("share-btn").addEventListener("click", function() {
+                alert("تم نسخ رابط التجميعة بنجاح إلى الحافظة!");
+            });
+            
+            document.getElementById("save-btn").addEventListener("click", function() {
+                alert("تم حفظ مكونات التجميعة بنجاح!");
+            });
+            
+            document.getElementById("buy-btn").addEventListener("click", function() {
+                alert("جاري تجهيز وتوجيهك لطلب المكونات...");
+            });
+            
+            document.addEventListener("click", function(event) {
+                if (event.target.closest(".select-alternative-btn")) {
+                    const btn = event.target.closest(".select-alternative-btn");
+                    const buildId = parseInt(btn.getAttribute("data-id"));
+                    const build = computerBuilds.find(b => b.id === buildId);
+                    if (build) {
+                        budgetInput.value = build.basePrice;
+                        budgetSlider.value = build.basePrice;
+                        displayBuild(build, build.basePrice);
+                    }
+                }
+            });
+            
+            // التشغيل التلقائي الافتراضي عند التحميل
+            generateRecommendation(70000);
+        });
+
+        // ==================== MAIN FUNCTIONS ====================
+        function generateRecommendation(budget) {
+            document.getElementById("loading").classList.remove("hidden");
+            document.getElementById("recommendation-section").classList.add("hidden");
+            
+            setTimeout(() => {
+                const bestBuild = findBestBuild(budget);
+                displayBuild(bestBuild, budget);
+                
+                document.getElementById("loading").classList.add("hidden");
+                document.getElementById("recommendation-section").classList.remove("hidden");
+            }, 600);
+        }
+
+        function displayBuild(build, budget) {
+            const totalPrice = calculateTotalPrice(build);
+            
+            document.getElementById("build-title").textContent = build.title;
+            document.getElementById("build-description").textContent = build.description;
+            
+            // رندرة صورة الكيس النهائي المناسب
+            document.getElementById("build-image").src = build.image;
+            document.getElementById("build-image").alt = build.title;
+            
+            document.getElementById("total-price").textContent = totalPrice.toLocaleString();
+            document.getElementById("budget-display").textContent = `ميزانيتك: ${budget.toLocaleString()} دج`;
+            
+            document.getElementById("gaming-stars").innerHTML = renderStars(build.gamingScore);
+            document.getElementById("gaming-text").textContent = getPerformanceText(build.gamingScore);
+            document.getElementById("editing-stars").innerHTML = renderStars(build.editingScore);
+            document.getElementById("editing-text").textContent = getPerformanceText(build.editingScore);
+            
+            // رندرة شبكة القطع بالصور الحقيقية
+            document.getElementById("components-grid").innerHTML = renderComponents(build.components);
+            
+            document.getElementById("alternative-builds").innerHTML = renderAlternativeBuilds(computerBuilds, budget);
+        }
+    </script>
+</body>
+</html>
